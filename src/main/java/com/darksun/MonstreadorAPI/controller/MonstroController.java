@@ -23,4 +23,8 @@ public class MonstroController {
     public Optional<Monstro> buscarMonstro(@PathVariable(value = "id") Long id){
         return monstroRepository.findById(id);
     }
+    @PostMapping("/monstro")
+    public Monstro salvaProduto(@RequestBody Monstro monstro) {
+        return monstroRepository.save(monstro);
+    }
 }
