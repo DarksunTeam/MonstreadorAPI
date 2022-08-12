@@ -32,4 +32,9 @@ public class MonstroController {
     public void deletaProduto(@RequestBody Monstro monstro) {
         monstroRepository.delete(monstro);
     }
+
+    @PutMapping("/monstro")
+    public Monstro atualizaProduto(@RequestBody Monstro monstro) {
+        return monstroRepository.save(monstro);
+    }
 }
