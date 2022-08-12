@@ -27,4 +27,9 @@ public class MonstroController {
     public Monstro salvaProduto(@RequestBody Monstro monstro) {
         return monstroRepository.save(monstro);
     }
+
+    @DeleteMapping("/monstro")
+    public void deletaProduto(@RequestBody Monstro monstro) {
+        monstroRepository.delete(monstro);
+    }
 }
