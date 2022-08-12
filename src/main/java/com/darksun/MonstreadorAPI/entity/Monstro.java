@@ -1,4 +1,4 @@
-package com.darksun.MonstreadorAPI.models;
+package com.darksun.MonstreadorAPI.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
