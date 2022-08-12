@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:13.1
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "postgres",
+          "-U",
+          "${MONSTREADOR_DB_USERNAME}"
+        ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=${MONSTREADOR_DB_USERNAME}
+      - POSTGRES_PASSWORD=${MONSTREADOR_DB_PASSWORD}
+      - POSTGRES_DB=monstreador-api
+      - APP_DB_USER=docker
+      - APP_DB_PASS=docker
+      - APP_DB_NAME=docker
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+  pgadmin:
+    image: dpage/pgadmin4
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "postgres",
+          "-U",
+          "${MONSTREADOR_DB_USERNAME}"
+        ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${MONSTREADOR_DB_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${MONSTREADOR_DB_PASSWORD}
+    ports:
+      - 5050:80
+    links:
+      - postgres
