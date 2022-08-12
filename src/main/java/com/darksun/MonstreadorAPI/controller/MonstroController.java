@@ -16,7 +16,11 @@ public class MonstroController {
     MonstroRepository monstroRepository;
 
     @GetMapping("/monstros")
-    public List<Monstro> listaMonstros(){
+    public List<Monstro> listaMonstros() {
         return monstroRepository.findAll();
+    }
+    @GetMapping("/monstro/{id}")
+    public Optional<Monstro> buscarMonstro(@PathVariable(value = "id") Long id){
+        return monstroRepository.findById(id);
     }
 }
