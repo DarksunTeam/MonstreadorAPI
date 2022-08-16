@@ -23,18 +23,18 @@ public class UsuarioController {
 		this.encoder = encoder;
 	}
 
-	@GetMapping( "/usuarios" )
-	@ApiOperation( value = "Retorna todos os usuários cadastrados na base" )
-	public List< Usuario > listaUsuarios( ) {
-		return usuarioRepository.findAll( );
-	}
+	//	@GetMapping( "/usuarios" )
+	//	@ApiOperation( value = "Retorna todos os usuários cadastrados na base" )
+	//	public List< Usuario > listaUsuarios( ) {
+	//		return usuarioRepository.findAll( );
+	//	}
 
-	@PostMapping( "/usuario" )
-	@ApiOperation( value = "Cadastra um novo usuário na base" )
-	public ResponseEntity< Usuario > salvar( @RequestBody Usuario usuario ) {
-		usuario.setPassword( encoder.encode( usuario.getPassword( ) ) );
-		return ResponseEntity.ok( usuarioRepository.save( usuario ) );
-	}
+	//	@PostMapping( "/usuario" )
+	//	@ApiOperation( value = "Cadastra um novo usuário na base" )
+	//	public ResponseEntity< Usuario > salvar( @RequestBody Usuario usuario ) {
+	//		usuario.setPassword( encoder.encode( usuario.getPassword( ) ) );
+	//		return ResponseEntity.ok( usuarioRepository.save( usuario ) );
+	//	}
 
 	@GetMapping( "/authenticate" )
 	@ApiOperation( value = "Valida credenciais do usuário" )
