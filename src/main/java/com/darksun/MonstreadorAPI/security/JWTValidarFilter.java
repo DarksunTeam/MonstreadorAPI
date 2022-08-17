@@ -12,31 +12,41 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
 public class JWTValidarFilter extends BasicAuthenticationFilter {
 
-	public static final String HEADER_ATRIBUTO = "Authorization";
-	public static final String ATRIBUTO_PREFIXO = "Bearer";
-
 	private final Properties prop = new Properties( );
 
 	public JWTValidarFilter( AuthenticationManager authenticationManager ) {
 		super( authenticationManager );
+
+		try ( InputStream input = getClass( ).getClassLoader( ).getResourceAsStream( "application.properties" ) ) {
+			prop.load( input );
+		} catch ( IOException ex ) {
+			ex.printStackTrace( );
+		}
+
+		try ( InputStream input = getClass( ).getClassLoader( ).getResourceAsStream( "secrets.properties" ) ) {
+			prop.load( input );
+		} catch ( IOException ex ) {
+			ex.printStackTrace( );
+		}
 	}
 
 	@Override
 	protected void doFilterInternal( HttpServletRequest request, HttpServletResponse response,
 									 FilterChain chain ) throws IOException, ServletException {
-		String atributo = request.getHeader( HEADER_ATRIBUTO );
+		String atributo = request.getHeader( prop.getProperty( "jwt.header" ) );
 
-		if ( atributo == null || !atributo.startsWith( ATRIBUTO_PREFIXO ) ) {
+		if ( atributo == null || !atributo.startsWith( prop.getProperty( "jwt.prefix" ) ) ) {
 			chain.doFilter( request, response );
 			return;
 		}
 
-		String token = atributo.replace( ATRIBUTO_PREFIXO, "" );
+		String token = atributo.replace( prop.getProperty( "jwt.prefix" ), "" ).replaceAll( "\\s", "" );
 		UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken( token );
 
 		SecurityContextHolder.getContext( ).setAuthentication( authenticationToken );
