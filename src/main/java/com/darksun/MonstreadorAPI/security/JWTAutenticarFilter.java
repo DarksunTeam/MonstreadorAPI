@@ -30,7 +30,8 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 	public JWTAutenticarFilter( AuthenticationManager authenticationManager ) {
 		this.authenticationManager = authenticationManager;
 
-		try ( InputStream input = getClass( ).getClassLoader( ).getResourceAsStream( "secrets.properties" ) ) {
+		try ( InputStream input = getClass( ).getClassLoader( )
+				.getResourceAsStream( "application.properties" ) ) {
 			this.prop = new Properties( );
 			prop.load( input );
 		} catch ( IOException ex ) {
@@ -42,23 +43,26 @@ public class JWTAutenticarFilter extends UsernamePasswordAuthenticationFilter {
 	public Authentication attemptAuthentication( HttpServletRequest request,
 												 HttpServletResponse response ) throws AuthenticationException {
 		try {
-			Usuario usuario = new ObjectMapper( ).readValue( request.getInputStream( ), Usuario.class );
+			Usuario usuario = new ObjectMapper( ).readValue( request.getInputStream( ),
+					Usuario.class );
 			return authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken( usuario.getLogin( ), usuario.getPassword( ),
-							new ArrayList<>( ) ) );
+					new UsernamePasswordAuthenticationToken( usuario.getLogin( ),
+							usuario.getPassword( ), new ArrayList<>( ) ) );
 		} catch ( IOException e ) {
 			throw new RuntimeException( "Falha ao autenticar usuario", e );
 		}
 	}
 
 	@Override
-	protected void successfulAuthentication( HttpServletRequest request, HttpServletResponse response,
-											 FilterChain chain,
+	protected void successfulAuthentication( HttpServletRequest request,
+											 HttpServletResponse response, FilterChain chain,
 											 Authentication authResult ) throws IOException, ServletException {
 		DetalheUsuarioData usuarioData = ( DetalheUsuarioData ) authResult.getPrincipal( );
 
-		String token = JWT.create( ).withSubject( usuarioData.getUsername( ) ).withExpiresAt( new Date(
-						System.currentTimeMillis( ) + Integer.parseInt( prop.getProperty( "jwt.expiration.token" ) ) ) )
+		String token = JWT.create( )
+				.withSubject( usuarioData.getUsername( ) )
+				.withExpiresAt( new Date( System.currentTimeMillis( ) + Integer.parseInt(
+						prop.getProperty( "jwt.expiration.token" ) ) ) )
 				.sign( Algorithm.HMAC512( prop.getProperty( "jwt.password.token" ) ) );
 		response.getWriter( ).write( token );
 		response.getWriter( ).flush( );

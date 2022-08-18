@@ -23,13 +23,8 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
 	public JWTValidarFilter( AuthenticationManager authenticationManager ) {
 		super( authenticationManager );
 
-		try ( InputStream input = getClass( ).getClassLoader( ).getResourceAsStream( "application.properties" ) ) {
-			prop.load( input );
-		} catch ( IOException ex ) {
-			ex.printStackTrace( );
-		}
-
-		try ( InputStream input = getClass( ).getClassLoader( ).getResourceAsStream( "secrets.properties" ) ) {
+		try ( InputStream input = getClass( ).getClassLoader( )
+				.getResourceAsStream( "application.properties" ) ) {
 			prop.load( input );
 		} catch ( IOException ex ) {
 			ex.printStackTrace( );
@@ -41,12 +36,13 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
 									 FilterChain chain ) throws IOException, ServletException {
 		String atributo = request.getHeader( prop.getProperty( "jwt.header" ) );
 
-		if ( atributo == null || !atributo.startsWith( prop.getProperty( "jwt.prefix" ) ) ) {
+		if ( atributo == null ) {
 			chain.doFilter( request, response );
 			return;
 		}
 
-		String token = atributo.replace( prop.getProperty( "jwt.prefix" ), "" ).replaceAll( "\\s", "" );
+		String token = atributo.replace( prop.getProperty( "jwt.prefix" ), "" )
+				.replaceAll( "\\s", "" );
 		UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken( token );
 
 		SecurityContextHolder.getContext( ).setAuthentication( authenticationToken );
@@ -54,7 +50,8 @@ public class JWTValidarFilter extends BasicAuthenticationFilter {
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken( String token ) {
-		String usuario = JWT.require( Algorithm.HMAC512( prop.getProperty( "jwt.password.token" ) ) )
+		String usuario = JWT.require(
+						Algorithm.HMAC512( prop.getProperty( "jwt.password.token" ) ) )
 				.build( )
 				.verify( token )
 				.getSubject( );

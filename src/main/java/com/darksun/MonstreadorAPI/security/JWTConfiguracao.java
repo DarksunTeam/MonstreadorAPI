@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -19,7 +20,8 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 	private final DetalheUsuarioServiceImpl usuarioService;
 	private final PasswordEncoder passwordEncoder;
 
-	public JWTConfiguracao( DetalheUsuarioServiceImpl usuarioService, PasswordEncoder passwordEncoder ) {
+	public JWTConfiguracao( DetalheUsuarioServiceImpl usuarioService,
+							PasswordEncoder passwordEncoder ) {
 		this.usuarioService = usuarioService;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -29,11 +31,27 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService( usuarioService ).passwordEncoder( passwordEncoder );
 	}
 
+	private static final String[] AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**",
+			"/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**" };
+
 	@Override
 	protected void configure( HttpSecurity http ) throws Exception {
-		http.csrf( ).disable( ).authorizeRequests( ).antMatchers( HttpMethod.POST, "/login" ).permitAll( ).anyRequest( )
-				.authenticated( ).and( ).addFilter( new JWTAutenticarFilter( authenticationManager( ) ) )
-				.addFilter( new JWTValidarFilter( authenticationManager( ) ) ).sessionManagement( )
+		http.csrf( )
+				.disable( )
+				.authorizeRequests( )
+				.antMatchers( AUTH_WHITELIST )
+				.permitAll( )
+				.antMatchers( HttpMethod.POST, "/login" )
+				.permitAll( )
+				.anyRequest( )
+				.authenticated( )
+				.and( )
+				.httpBasic( )
+				.authenticationEntryPoint( swaggerAuthenticationEntryPoint( ) )
+				.and( )
+				.addFilter( new JWTAutenticarFilter( authenticationManager( ) ) )
+				.addFilter( new JWTValidarFilter( authenticationManager( ) ) )
+				.sessionManagement( )
 				.sessionCreationPolicy( SessionCreationPolicy.STATELESS );
 	}
 
@@ -44,5 +62,12 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 		CorsConfiguration corsConfiguration = new CorsConfiguration( ).applyPermitDefaultValues( );
 		source.registerCorsConfiguration( "/**", corsConfiguration );
 		return source;
+	}
+
+	@Bean
+	public BasicAuthenticationEntryPoint swaggerAuthenticationEntryPoint( ) {
+		BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint( );
+		entryPoint.setRealmName( "Swagger Realm" );
+		return entryPoint;
 	}
 }
