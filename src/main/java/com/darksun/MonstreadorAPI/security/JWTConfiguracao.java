@@ -18,11 +18,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 
 	private final DetalheUsuarioServiceImpl usuarioService;
-	private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder           passwordEncoder;
 
 	public JWTConfiguracao( DetalheUsuarioServiceImpl usuarioService,
 							PasswordEncoder passwordEncoder ) {
-		this.usuarioService = usuarioService;
+		this.usuarioService  = usuarioService;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -32,27 +32,28 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 	}
 
 	private static final String[] AUTH_WHITELIST = { "/v3/api-docs/**", "/swagger-ui/**",
-			"/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/webjars/**" };
+													 "/swagger-ui.html", "/swagger-resources/**",
+													 "/v2/api-docs", "/webjars/**" };
 
 	@Override
 	protected void configure( HttpSecurity http ) throws Exception {
 		http.csrf( )
-				.disable( )
-				.authorizeRequests( )
-				.antMatchers( AUTH_WHITELIST )
-				.permitAll( )
-				.antMatchers( HttpMethod.POST, "/login", "/api/authenticate" )
-				.permitAll( )
-				.anyRequest( )
-				.authenticated( )
-				.and( )
-				.httpBasic( )
-				.authenticationEntryPoint( swaggerAuthenticationEntryPoint( ) )
-				.and( )
-				.addFilter( new JWTAutenticarFilter( authenticationManager( ) ) )
-				.addFilter( new JWTValidarFilter( authenticationManager( ) ) )
-				.sessionManagement( )
-				.sessionCreationPolicy( SessionCreationPolicy.STATELESS );
+			.disable( )
+			.authorizeRequests( )
+			.antMatchers( AUTH_WHITELIST )
+			.permitAll( )
+			.antMatchers( HttpMethod.POST, "/login", "/api/authenticate", "/api/usuario" )
+			.permitAll( )
+			.anyRequest( )
+			.authenticated( )
+			.and( )
+			.httpBasic( )
+			.authenticationEntryPoint( swaggerAuthenticationEntryPoint( ) )
+			.and( )
+			.addFilter( new JWTAutenticarFilter( authenticationManager( ) ) )
+			.addFilter( new JWTValidarFilter( authenticationManager( ) ) )
+			.sessionManagement( )
+			.sessionCreationPolicy( SessionCreationPolicy.STATELESS );
 	}
 
 	@Bean

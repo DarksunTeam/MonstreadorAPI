@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.darksun.MonstreadorAPI.entity.Usuario;
 import com.darksun.MonstreadorAPI.repository.UsuarioRepository;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,34 +23,43 @@ import java.util.Properties;
 public class UsuarioController {
 
 	private final UsuarioRepository usuarioRepository;
-	private final PasswordEncoder encoder;
+	private final PasswordEncoder   encoder;
+
+	@Value( "${jwt.password.token}" )
+	private String passwordToken;
 
 	private final Properties prop = new Properties( );
 
 	public UsuarioController( UsuarioRepository usuarioRepository, PasswordEncoder encoder ) {
 		this.usuarioRepository = usuarioRepository;
-		this.encoder = encoder;
+		this.encoder           = encoder;
 
 		try ( InputStream input = getClass( ).getClassLoader( )
-				.getResourceAsStream( "application.properties" ) ) {
+											 .getResourceAsStream( "application.properties" ) ) {
 			prop.load( input );
 		} catch ( IOException ex ) {
 			ex.printStackTrace( );
 		}
 	}
 
-	//	@GetMapping( "/usuarios" )
-	//	@ApiOperation( value = "Retorna todos os usuários cadastrados na base" )
-	//	public List< Usuario > listaUsuarios( ) {
-	//		return usuarioRepository.findAll( );
-	//	}
+	@GetMapping( "/usuarios" )
+	@ApiOperation( value = "Retorna todos os usuários cadastrados na base" )
+	public List< Usuario > listaUsuarios( ) {
+		return usuarioRepository.findAll( );
+	}
 
-	//	@PostMapping( "/usuario" )
-	//	@ApiOperation( value = "Cadastra um novo usuário na base" )
-	//	public ResponseEntity< Usuario > salvar( @RequestBody Usuario usuario ) {
-	//		usuario.setPassword( encoder.encode( usuario.getPassword( ) ) );
-	//		return ResponseEntity.ok( usuarioRepository.save( usuario ) );
-	//	}
+	@PostMapping( "/usuario" )
+	@ApiOperation( value = "Cadastra um novo usuário na base" )
+	public ResponseEntity< String > salvar( @RequestBody Usuario usuario,
+											@RequestHeader( "token" ) String token ) {
+		if ( passwordToken.equals( token ) ) {
+			usuario.setPassword( encoder.encode( usuario.getPassword( ) ) );
+			return ResponseEntity.status( HttpStatus.CREATED )
+								 .body( usuarioRepository.save( usuario ).toString( ) );
+		} else {
+			return ResponseEntity.status( HttpStatus.UNAUTHORIZED ).body( "Token inválido" );
+		}
+	}
 
 	@PostMapping( "/authenticate" )
 	@ApiOperation( value = "Valida credenciais do usuário e gera token JWT" )
@@ -60,18 +70,18 @@ public class UsuarioController {
 		}
 
 		Usuario dbUsuario = optUsuario.get( );
-		Boolean valid = encoder.matches( usuario.getPassword( ), dbUsuario.getPassword( ) );
+		Boolean valid     = encoder.matches( usuario.getPassword( ), dbUsuario.getPassword( ) );
 
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
-		String token = "";
+		String     token  = "";
 
 		if ( valid ) {
 			status = HttpStatus.OK;
-			token = JWT.create( )
-					.withSubject( usuario.getLogin( ) )
-					.withExpiresAt( new Date( System.currentTimeMillis( ) + Integer.parseInt(
-							prop.getProperty( "jwt.expiration.token" ) ) ) )
-					.sign( Algorithm.HMAC512( prop.getProperty( "jwt.password.token" ) ) );
+			token  = JWT.create( )
+						.withSubject( usuario.getLogin( ) )
+						.withExpiresAt( new Date( System.currentTimeMillis( ) + Integer.parseInt(
+								prop.getProperty( "jwt.expiration.token" ) ) ) )
+						.sign( Algorithm.HMAC512( prop.getProperty( "jwt.password.token" ) ) );
 		}
 
 		return ResponseEntity.status( status ).body( token );
