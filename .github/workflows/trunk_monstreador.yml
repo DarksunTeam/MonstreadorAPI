@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'monstreador'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_323432012EE14DB3983526ABAA93FD1E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0F24EAEBB21D4DF891A5D0DA9D763736 }}
           package: '*.jar'
