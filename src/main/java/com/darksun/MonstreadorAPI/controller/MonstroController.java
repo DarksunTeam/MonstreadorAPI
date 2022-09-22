@@ -11,39 +11,41 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api")
-@Api(value = "API REST Monstros")
-@CrossOrigin(origins = "*")
+@RequestMapping( value = "/api" )
+@Api( value = "API REST Monstros" )
+@CrossOrigin( origins = "*" )
 public class MonstroController {
 
-    @Autowired
-    MonstroRepository monstroRepository;
+	@Autowired
+	MonstroRepository monstroRepository;
 
-    @GetMapping("/monstros")
-    @ApiOperation( value = "Retorna todos os monstros cadastrados na base")
-    public List<Monstro> listaMonstros() {
-        return monstroRepository.findAll();
-    }
-    @GetMapping("/monstro/{id}")
-    @ApiOperation( value = "Busca um monstro na base pelo ID cadastrado")
-    public Optional<Monstro> buscarMonstro(@PathVariable(value = "id") Long id){
-        return monstroRepository.findById(id);
-    }
-    @PostMapping("/monstro")
-    @ApiOperation( value = "Cadastra um novo monstro na base")
-    public Monstro salvaProduto(@RequestBody Monstro monstro) {
-        return monstroRepository.save(monstro);
-    }
+	@GetMapping( "/monstros" )
+	@ApiOperation( value = "Retorna todos os monstros cadastrados na base" )
+	public List< Monstro > listaMonstros( ) {
+		return monstroRepository.findAll( );
+	}
 
-    @DeleteMapping("/monstro")
-    @ApiOperation( value = "Apaga um monstro da base")
-    public void deletaProduto(@RequestBody Monstro monstro) {
-        monstroRepository.delete(monstro);
-    }
+	@GetMapping( "/monstro/{id}" )
+	@ApiOperation( value = "Busca um monstro na base pelo ID cadastrado" )
+	public Optional< Monstro > buscarMonstro( @PathVariable( value = "id" ) Long id ) {
+		return monstroRepository.findById( id );
+	}
 
-    @PutMapping("/monstro")
-    @ApiOperation( value = "Altera informações de um monstro já cadastrado na base")
-    public Monstro atualizaProduto(@RequestBody Monstro monstro) {
-        return monstroRepository.save(monstro);
-    }
+	@PostMapping( "/monstro" )
+	@ApiOperation( value = "Cadastra um novo monstro na base" )
+	public Monstro salvaMonstro( @RequestBody Monstro monstro ) {
+		return monstroRepository.save( monstro );
+	}
+
+	@DeleteMapping( "/monstro" )
+	@ApiOperation( value = "Apaga um monstro da base" )
+	public void deletaMonstro( @RequestBody Monstro monstro ) {
+		monstroRepository.delete( monstro );
+	}
+
+	@PutMapping( "/monstro" )
+	@ApiOperation( value = "Altera informações de um monstro já cadastrado na base" )
+	public Monstro atualizaMonstro( @RequestBody Monstro monstro ) {
+		return monstroRepository.save( monstro );
+	}
 }

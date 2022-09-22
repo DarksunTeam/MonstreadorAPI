@@ -1,12 +1,13 @@
 package com.darksun.MonstreadorAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,7 @@ public class Monstro implements Serializable {
 	@Id
 	@GeneratedValue
 	private Long id;
+
 	private String nome;
 
 	private Integer forca;
@@ -46,4 +48,16 @@ public class Monstro implements Serializable {
 	private Double velocidadeVoar;
 
 	private Integer nd;
+
+	@JsonManagedReference
+	@OneToMany( mappedBy = "monstro", cascade = CascadeType.ALL )
+	private List< Ataque > ataques = new ArrayList< Ataque >( );
+
+	public void addAtaque( Ataque ataque ) {
+		ataques.add( ataque );
+	}
+
+	public void removeAtaque( Ataque ataque ) {
+		ataques.remove( ataque );
+	}
 }
