@@ -49,10 +49,24 @@ public class Monstro implements Serializable {
 
 	private Integer nd;
 
+	@ManyToMany( fetch = FetchType.EAGER )
+	@JoinTable( name = "monstro_habilidade", joinColumns = {
+			@JoinColumn( name = "monstro_id", nullable = false, updatable = false ) }, inverseJoinColumns = {
+			@JoinColumn( name = "habilidade_id", nullable = false, updatable = false ) } )
+	private List< Habilidade > habilidades = new ArrayList< Habilidade >( );
+
 	@JsonManagedReference
 	@OneToMany( mappedBy = "monstro", cascade = CascadeType.ALL )
 	private List< Ataque > ataques = new ArrayList< Ataque >( );
 
+	public void addHabilidade( Habilidade habilidade ) {
+		habilidades.add( habilidade );
+	}
+
+	public void removeHabilidade( Habilidade habilidade ) {
+		habilidades.remove( habilidade );
+	}
+	
 	public void addAtaque( Ataque ataque ) {
 		ataques.add( ataque );
 	}
