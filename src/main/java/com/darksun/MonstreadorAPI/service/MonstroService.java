@@ -2,6 +2,10 @@ package com.darksun.MonstreadorAPI.service;
 
 import com.darksun.MonstreadorAPI.entity.Habilidade;
 import com.darksun.MonstreadorAPI.entity.Monstro;
+import com.darksun.MonstreadorAPI.exception.InvalidPrerequisitesException;
+import com.darksun.MonstreadorAPI.exception.ResourceNotFoundException;
+import com.darksun.MonstreadorAPI.repository.MonstroRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,22 +13,28 @@ import java.util.List;
 @Component
 public class MonstroService {
 
-	public Boolean validaMonstro( Monstro monstro ) {
-		Boolean result = true;
-		if ( !validaPrerequisitosHabilidades( monstro.getHabilidades( ) ) ) {
-			result = false;
-		}
-		return result;
+	@Autowired
+	MonstroRepository repository;
+
+	public Monstro buscaNaBase( Long id ) {
+		return repository.findById( id )
+						 .orElseThrow( ( ) -> new ResourceNotFoundException(
+								 "Monstro não encontrado para o ID: " + id ) );
 	}
 
-	public Boolean validaPrerequisitosHabilidades( List< Habilidade > habilidades ) {
+	public void validaMonstro( Monstro monstro ) {
+		validaPrerequisitosHabilidades( monstro.getHabilidades( ) );
+	}
+
+	public void validaPrerequisitosHabilidades( List< Habilidade > habilidades ) {
 		for ( Habilidade habilidade : habilidades ) {
 			for ( Habilidade preRequisito : habilidade.getPreRequisitos( ) ) {
 				if ( !habilidades.contains( preRequisito ) ) {
-					return false;
+					throw new InvalidPrerequisitesException(
+							"Monstro não cumpre o pré-requisito " + preRequisito.getNome( )
+									+ " da habilidade " + habilidade.getNome( ) );
 				}
 			}
 		}
-		return true;
 	}
 }

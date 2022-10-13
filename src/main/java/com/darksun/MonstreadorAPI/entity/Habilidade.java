@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,11 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
 public class Habilidade implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -33,10 +35,15 @@ public class Habilidade implements Serializable {
 	private List< Habilidade > preRequisitos;
 
 	public void addPreRequisito( Habilidade habilidade ) {
+		if ( preRequisitos == null ) {
+			preRequisitos = new ArrayList<>( );
+		}
 		preRequisitos.add( habilidade );
 	}
 
 	public void removePreRequisito( Habilidade habilidade ) {
-		preRequisitos.remove( habilidade );
+		if ( preRequisitos != null ) {
+			preRequisitos.remove( habilidade );
+		}
 	}
 }
