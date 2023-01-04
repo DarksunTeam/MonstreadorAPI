@@ -39,6 +39,7 @@ public class HabilidadeController {
 	@PostMapping( "/habilidade" )
 	@ApiOperation( value = "Cadastra um novo habilidade na base" )
 	public ResponseEntity< Habilidade > salvaHabilidade( @RequestBody Habilidade habilidade ) {
+		habilidadeService.validaHabilidade( habilidade );
 		return new ResponseEntity<>( habilidadeRepository.save( habilidade ), HttpStatus.CREATED );
 	}
 
@@ -54,6 +55,7 @@ public class HabilidadeController {
 	@ApiOperation( value = "Altera informações de um habilidade já cadastrado na base" )
 	public ResponseEntity< Habilidade > atualizaHabilidade( @RequestBody Habilidade habilidade ) {
 		habilidadeService.buscaNaBase( habilidade.getId( ) );
+		habilidadeService.validaHabilidade( habilidade );
 		return new ResponseEntity<>( habilidadeRepository.save( habilidade ), HttpStatus.OK );
 	}
 }

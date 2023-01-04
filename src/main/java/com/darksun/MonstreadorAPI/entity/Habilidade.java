@@ -32,18 +32,13 @@ public class Habilidade implements Serializable {
 	@JoinTable( name = "habilidade_prerequisito", joinColumns = {
 			@JoinColumn( name = "dependente_id", referencedColumnName = "id" ) }, inverseJoinColumns = {
 			@JoinColumn( name = "requisito_id", referencedColumnName = "id" ) } )
-	private List< Habilidade > preRequisitos;
+	private List< Habilidade > preRequisitos = new ArrayList<>( );
 
 	public void addPreRequisito( Habilidade habilidade ) {
-		if ( preRequisitos == null ) {
-			preRequisitos = new ArrayList<>( );
-		}
 		preRequisitos.add( habilidade );
 	}
 
 	public void removePreRequisito( Habilidade habilidade ) {
-		if ( preRequisitos != null ) {
-			preRequisitos.remove( habilidade );
-		}
+		preRequisitos.remove( habilidade );
 	}
 }
