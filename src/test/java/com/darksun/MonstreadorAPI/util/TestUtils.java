@@ -25,14 +25,18 @@ public class TestUtils {
 	}
 
 	public static Monstro generateMonstro( String nome, Integer nivel, Integer incremental ) {
-		return generateMonstro( nome, nivel, incremental, null, null );
+		return generateMonstro( nome, nivel, incremental, new ArrayList<>( ), new ArrayList<>( ) );
+	}
+
+	public static Monstro generateGenericMonstro( ) {
+		return generateMonstro( "Monstro", 1, 0 );
 	}
 
 	public static Monstro generateMonstroQuebraRequisito( String nome, Integer nivel,
 														  Integer incremental ) {
 		List< Habilidade > habilidades = new ArrayList<>( );
 		habilidades.add( generateHabilidadeComRequisito( "Trespassar Maior", "Trespassar" ) );
-		return generateMonstro( nome, nivel, incremental, habilidades, null );
+		return generateMonstro( nome, nivel, incremental, habilidades, new ArrayList<>( ) );
 	}
 
 	public static Monstro generateMonstro( String nome, Integer nivel, Integer incremental,
@@ -65,8 +69,35 @@ public class TestUtils {
 					  .build( );
 	}
 
+	public static List< Habilidade > generateListHabilidade( ) {
+		List< Habilidade > habilidades = new ArrayList<>( );
+
+		habilidades.add( generateHabilidade( 1L, "Trespassar" ) );
+		habilidades.add( generateHabilidadeComRequisito( "Trespassar Maior", "Trespassar" ) );
+		habilidades.add( generateHabilidade( 3L, "Ataque Poderoso" ) );
+		habilidades.add( generateHabilidade( 4L, "Trespassar Maior" ) );
+		habilidades.add( generateHabilidade( 5L, "Vitalidade" ) );
+		habilidades.add( generateHabilidade( 6L, "Vontade de ferro" ) );
+		habilidades.add( generateHabilidade( 7L, "Magia acelerada" ) );
+		habilidades.add( generateHabilidade( 8L, "Saltar e Golpear" ) );
+		habilidades.add( generateHabilidade( 9L, "Voar" ) );
+		habilidades.add( generateHabilidade( 10L, "Nadar" ) );
+
+		return habilidades;
+	}
+
 	public static Habilidade generateHabilidade( Long id, String nome ) {
-		return Habilidade.builder( ).id( id ).nome( nome ).descricao( "" ).custo( 0 ).build( );
+		return Habilidade.builder( )
+						 .id( id )
+						 .nome( nome )
+						 .descricao( "" )
+						 .custo( 0 )
+						 .preRequisitos( new ArrayList<>( ) )
+						 .build( );
+	}
+
+	public static Habilidade generateGenericHabilidade( ) {
+		return generateHabilidade( 1L, "Habilidade" );
 	}
 
 	public static Habilidade generateHabilidadeComRequisito( String nome, String nomeReq ) {
