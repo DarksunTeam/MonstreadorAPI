@@ -53,11 +53,11 @@ public class Monstro implements Serializable {
 	@JoinTable( name = "monstro_habilidade", joinColumns = {
 			@JoinColumn( name = "monstro_id", nullable = false, updatable = false ) }, inverseJoinColumns = {
 			@JoinColumn( name = "habilidade_id", nullable = false, updatable = false ) } )
-	private List< Habilidade > habilidades = new ArrayList< Habilidade >( );
+	private List< Habilidade > habilidades = new ArrayList<>( );
 
 	@JsonManagedReference
 	@OneToMany( mappedBy = "monstro", cascade = CascadeType.ALL )
-	private List< Ataque > ataques = new ArrayList< Ataque >( );
+	private List< Ataque > ataques = new ArrayList<>( );
 
 	public void addHabilidade( Habilidade habilidade ) {
 		habilidades.add( habilidade );
@@ -66,7 +66,7 @@ public class Monstro implements Serializable {
 	public void removeHabilidade( Habilidade habilidade ) {
 		habilidades.remove( habilidade );
 	}
-	
+
 	public void addAtaque( Ataque ataque ) {
 		ataques.add( ataque );
 	}

@@ -16,6 +16,9 @@ public class MonstroService {
 	@Autowired
 	MonstroRepository repository;
 
+	@Autowired
+	HabilidadeService habilidadeService;
+
 	public Monstro buscaNaBase( Long id ) {
 		return repository.findById( id )
 						 .orElseThrow( ( ) -> new ResourceNotFoundException(
@@ -28,7 +31,8 @@ public class MonstroService {
 
 	public void validaPrerequisitosHabilidades( List< Habilidade > habilidades ) {
 		for ( Habilidade habilidade : habilidades ) {
-			for ( Habilidade preRequisito : habilidade.getPreRequisitos( ) ) {
+			Habilidade dbHabilidade = habilidadeService.buscaNaBase( habilidade.getId( ) );
+			for ( Habilidade preRequisito : dbHabilidade.getPreRequisitos( ) ) {
 				if ( !habilidades.contains( preRequisito ) ) {
 					throw new InvalidPrerequisitesException(
 							"Monstro não cumpre o pré-requisito " + preRequisito.getNome( )

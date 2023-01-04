@@ -54,8 +54,8 @@ public class MonstroController {
 	@PutMapping( "/monstro" )
 	@ApiOperation( value = "Altera informações de um monstro já cadastrado na base" )
 	public ResponseEntity< Monstro > atualizaMonstro( @RequestBody Monstro monstro ) {
-		monstroService.validaMonstro( monstro );
 		monstroService.buscaNaBase( monstro.getId( ) );
+		monstroService.validaMonstro( monstro );
 		return new ResponseEntity<>( monstroRepository.save( monstro ), HttpStatus.OK );
 	}
 }
