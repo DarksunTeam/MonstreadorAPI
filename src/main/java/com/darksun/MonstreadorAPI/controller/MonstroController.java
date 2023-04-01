@@ -30,7 +30,7 @@ public class MonstroController {
 		return new ResponseEntity<>( monstroRepository.findAll( ), HttpStatus.OK );
 	}
 
-	@GetMapping( "/monstro/{id}" )
+	@GetMapping( "/monstros/{id}" )
 	@ApiOperation( value = "Busca um monstro na base pelo ID cadastrado" )
 	public ResponseEntity< Monstro > buscarMonstro( @PathVariable( value = "id" ) Long id ) {
 		return new ResponseEntity<>( monstroService.buscaNaBase( id ), HttpStatus.OK );
@@ -43,7 +43,7 @@ public class MonstroController {
 		return new ResponseEntity<>( monstroRepository.save( monstro ), HttpStatus.CREATED );
 	}
 
-	@DeleteMapping( "/monstro" )
+	@DeleteMapping( "/monstros" )
 	@ApiOperation( value = "Apaga um monstro da base" )
 	public ResponseEntity< HttpStatus > deletaMonstro( @RequestBody Monstro monstro ) {
 		monstroService.buscaNaBase( monstro.getId( ) );
@@ -51,7 +51,7 @@ public class MonstroController {
 		return new ResponseEntity<>( HttpStatus.NO_CONTENT );
 	}
 
-	@PutMapping( "/monstro" )
+	@PutMapping( "/monstros" )
 	@ApiOperation( value = "Altera informações de um monstro já cadastrado na base" )
 	public ResponseEntity< Monstro > atualizaMonstro( @RequestBody Monstro monstro ) {
 		monstroService.buscaNaBase( monstro.getId( ) );

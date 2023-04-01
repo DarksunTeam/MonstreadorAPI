@@ -48,7 +48,7 @@ public class UsuarioController {
 		return usuarioRepository.findAll( );
 	}
 
-	@PostMapping( "/usuario" )
+	@PostMapping( "/usuarios" )
 	@ApiOperation( value = "Cadastra um novo usuário na base" )
 	public ResponseEntity< String > salvar( @RequestBody Usuario usuario,
 											@RequestHeader( "token" ) String token ) {

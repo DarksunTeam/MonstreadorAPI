@@ -30,20 +30,20 @@ public class HabilidadeController {
 		return new ResponseEntity<>( habilidadeRepository.findAll( ), HttpStatus.OK );
 	}
 
-	@GetMapping( "/habilidade/{id}" )
+	@GetMapping( "/habilidades/{id}" )
 	@ApiOperation( value = "Busca um habilidade na base pelo ID cadastrado" )
 	public ResponseEntity< Habilidade > buscarHabilidade( @PathVariable( value = "id" ) Long id ) {
 		return new ResponseEntity<>( habilidadeService.buscaNaBase( id ), HttpStatus.OK );
 	}
 
-	@PostMapping( "/habilidade" )
+	@PostMapping( "/habilidades" )
 	@ApiOperation( value = "Cadastra um novo habilidade na base" )
 	public ResponseEntity< Habilidade > salvaHabilidade( @RequestBody Habilidade habilidade ) {
 		habilidadeService.validaHabilidade( habilidade );
 		return new ResponseEntity<>( habilidadeRepository.save( habilidade ), HttpStatus.CREATED );
 	}
 
-	@DeleteMapping( "/habilidade" )
+	@DeleteMapping( "/habilidades" )
 	@ApiOperation( value = "Apaga um habilidade da base" )
 	public ResponseEntity< HttpStatus > deletaHabilidade( @RequestBody Habilidade habilidade ) {
 		habilidadeService.buscaNaBase( habilidade.getId( ) );
@@ -51,7 +51,7 @@ public class HabilidadeController {
 		return new ResponseEntity<>( HttpStatus.NO_CONTENT );
 	}
 
-	@PutMapping( "/habilidade" )
+	@PutMapping( "/habilidades" )
 	@ApiOperation( value = "Altera informações de um habilidade já cadastrado na base" )
 	public ResponseEntity< Habilidade > atualizaHabilidade( @RequestBody Habilidade habilidade ) {
 		habilidadeService.buscaNaBase( habilidade.getId( ) );
